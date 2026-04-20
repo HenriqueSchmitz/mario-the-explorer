@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=82.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mario-the-explorer"
+version = "0.1.0"
+authors = [
+  { name="Henrique Schmitz", email="sch.henrique@gmail.com" },
+]
+description = "Code used for reinforcement learning project to teach super mario world to explore and find hidden items/rooms/exits."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+license = {file = "LICENSE"}
+dependencies = [
+  "stable-retro",
+  "coloredlogs"
+]
+
+[project.urls]
+github = "https://github.com/HenriqueSchmitz/mario-the-explorer"
+
+[pycodestyle]
+max_line_length = 120
