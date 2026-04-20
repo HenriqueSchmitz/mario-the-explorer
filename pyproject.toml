@@ -7,6 +7,7 @@ name = "mario-the-explorer"
 version = "0.1.0"
 authors = [
   { name="Henrique Schmitz", email="sch.henrique@gmail.com" },
+  { name="Luis Gómez Ordoniez", email="luis.gomez.ordoniez@gmail.com" },
 ]
 description = "Code used for reinforcement learning project to teach super mario world to explore and find hidden items/rooms/exits."
 readme = "README.md"
