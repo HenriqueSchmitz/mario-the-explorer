@@ -16,6 +16,7 @@ EMULATOR_NAME = "SuperMarioWorld-Snes-v0"
 
 
 class SuperMarioWorldEmulator(gym.Env):
+    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 60}
     is_emulator_memory_initialized = False
 
     def __init__(self,
@@ -31,7 +32,9 @@ class SuperMarioWorldEmulator(gym.Env):
         if not self.is_emulator_memory_initialized:
             setup_emulator_memory()
             self.is_emulator_memory_initialized = True
+        self.render_mode = render_mode
         self.env = retro.make(game=EMULATOR_NAME, state=level, render_mode=render_mode)
+        self.metadata = self.env.metadata
         self.reward_model = reward_model
         self._max_episode_length = max_episode_length
         self._world_parser = WorldParser(self.env, logger=logger)
