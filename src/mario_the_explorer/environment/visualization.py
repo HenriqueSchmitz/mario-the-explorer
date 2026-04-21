@@ -72,7 +72,7 @@ class DebugVisualizer():
             s = 180 + (t_id % 75)
         hsv_pixel = np.array([[[h, s, v]]]).astype(np.uint8)
         rgb_pixel = cv2.cvtColor(hsv_pixel, cv2.COLOR_HSV2RGB)[0][0]
-        return rgb_pixel[0], rgb_pixel[1], rgb_pixel[2]
+        return (int(rgb_pixel[0]), int(rgb_pixel[1]), int(rgb_pixel[2]))
 
     def _draw_grid(self, img):
         h, w = img.shape[:2]
