@@ -7,7 +7,7 @@ from mario_the_explorer.environment.env_setup import setup_emulator_memory
 from mario_the_explorer.environment.rewards import RewardModel
 import stable_retro as retro # type: ignore
 
-from mario_the_explorer.environment.visualization import DebugVisualizer
+from mario_the_explorer.environment.visualization import DebugVisualizer, ScreenOverlay
 from mario_the_explorer.environment.world_parser import SCREEN_COLUMNS, SCREEN_ROWS, WorldParser
 from mario_the_explorer.logging.dummy_logger import DummyLogger
 
@@ -23,6 +23,7 @@ class SuperMarioWorldEmulator(gym.Env):
                  level: str,
                  render_mode: str,
                  reward_model: RewardModel,
+                 screen_overlay: Optional[ScreenOverlay] = None,
                  max_episode_length: Optional[int] = None,
                  render_debug: bool = False,
                  render_grid: bool = False,
@@ -36,6 +37,7 @@ class SuperMarioWorldEmulator(gym.Env):
         self.env = retro.make(game=EMULATOR_NAME, state=level, render_mode=render_mode)
         self.metadata = self.env.metadata
         self.reward_model = reward_model
+        self.screen_overlay = screen_overlay
         self._max_episode_length = max_episode_length
         self._world_parser = WorldParser(self.env, logger=logger)
         self._debug_visualizer = DebugVisualizer(render_grid=render_grid)
@@ -55,12 +57,13 @@ class SuperMarioWorldEmulator(gym.Env):
         self._has_found_ram_offset = False
         return matrix_obs, info
 
-    def render(self):
-        original_frame = self.env.render()
-        if not self.render_debug:
-            return original_frame
-        debug_frame = self._debug_visualizer.overlay(original_frame, self.observation)
-        return debug_frame
+    def render(self) -> np.ndarray:
+        game_frame = self.env.render()
+        if self.render_debug:
+            game_frame = self._debug_visualizer.overlay(game_frame, self.observation)
+        if self.screen_overlay is not None:
+            game_frame = self.screen_overlay.apply(game_frame, self.observation)
+        return game_frame
 
     def step(self, action: list[int]) -> tuple[Any, float, bool, bool, dict]:
         _, _, _, _, info = self.env.step(action)

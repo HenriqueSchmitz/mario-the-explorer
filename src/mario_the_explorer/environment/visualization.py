@@ -1,3 +1,6 @@
+from abc import ABC, abstractmethod
+from typing import Optional
+
 import cv2
 import numpy as np
 
@@ -12,13 +15,20 @@ GRID_COLOR_RGB = (80, 80, 80)
 
 
 
+class ScreenOverlay(ABC):
+
+    @abstractmethod
+    def apply(self, original_frame: np.ndarray, observation: Optional[list[list[Tile]]]):
+        raise NotImplementedError
+
+
 class DebugVisualizer():
     def __init__(self, render_grid=False):
         self.render_grid = render_grid
         self.img_width = SCREEN_COLUMNS * TILE_SIZE
         self.img_height = SCREEN_ROWS * TILE_SIZE
 
-    def overlay(self, original_frame, observation):
+    def overlay(self, original_frame: np.ndarray, observation: Optional[list[list[Tile]]]):
         game_view = original_frame.copy()
         if self.render_grid:
             game_view = self._draw_grid(game_view)
