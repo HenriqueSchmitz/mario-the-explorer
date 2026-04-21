@@ -48,7 +48,7 @@ class DebugVisualizer():
         y_start = int(y * TILE_SIZE)
         x_end = x_start + TILE_SIZE - 1
         y_end = y_start + TILE_SIZE - 1
-        cv2.rectangle(img, (x_start, y_start), (x_end, y_end), color, -1) # type: ignore
+        cv2.rectangle(img, (x_start, y_start), (x_end, y_end), color, -1)
 
     def _choose_tile_color(self, tile: Tile) -> tuple[int, int, int]:
         if tile["type"] == TileType.EMPTY:
