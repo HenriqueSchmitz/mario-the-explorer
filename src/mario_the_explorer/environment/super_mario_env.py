@@ -53,9 +53,10 @@ class SuperMarioWorldEmulator(gym.Env):
     def reset(self, **kwargs):
         self._current_step = 0
         _, info = self.env.reset(**kwargs)
-        matrix_obs = self._world_parser.get_screen_matrix(info)
+        self.observation = self._world_parser.get_screen_matrix(info)
+        simplified_observation = self._world_parser.get_screen_matrix_simplified(info)
         self._has_found_ram_offset = False
-        return matrix_obs, info
+        return simplified_observation, info
 
     def render(self) -> np.ndarray:
         game_frame = self.env.render()
