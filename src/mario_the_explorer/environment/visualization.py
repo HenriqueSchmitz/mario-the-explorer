@@ -15,16 +15,14 @@ GRID_COLOR_RGB = (80, 80, 80)
 class DebugVisualizer():
     def __init__(self, render_grid=False):
         self.render_grid = render_grid
-        self.img_width = SCREEN_ROWS * TILE_SIZE
-        self.img_height = SCREEN_COLUMNS * TILE_SIZE
+        self.img_width = SCREEN_COLUMNS * TILE_SIZE
+        self.img_height = SCREEN_ROWS * TILE_SIZE
 
     def overlay(self, original_frame, observation):
         game_view = original_frame.copy()
         if self.render_grid:
             game_view = self._draw_grid(game_view)
         matrix_view = self._get_observation_image(observation)
-        print(f"game_view shape: {game_view.shape}")
-        print(f"matrix_view shape: {matrix_view.shape}")
         return np.hstack((game_view, matrix_view))
 
     def _get_observation_image(self, observation):
