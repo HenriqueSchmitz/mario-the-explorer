@@ -50,9 +50,9 @@ class DebugVisualizer():
         y_end = y_start + TILE_SIZE - 1
         cv2.rectangle(img, (x_start, y_start), (x_end, y_end), color, -1) # type: ignore
 
-    def _choose_tile_color(self, tile: Tile) -> np.ndarray:
+    def _choose_tile_color(self, tile: Tile) -> tuple[int, int, int]:
         if tile["type"] == TileType.EMPTY:
-            return np.array(BLACK_RGB)
+            return BLACK_RGB
         t_type = tile["type"]
         t_id = int(tile["id"])
         h, s, v = RED_HSV
@@ -71,8 +71,8 @@ class DebugVisualizer():
             h = 20 + (t_id % 15)
             s = 180 + (t_id % 75)
         hsv_pixel = np.array([[[h, s, v]]]).astype(np.uint8)
-        rgb_pixel = cv2.cvtColor(hsv_pixel, cv2.COLOR_HSV2RGB)
-        return rgb_pixel[0][0]
+        rgb_pixel = cv2.cvtColor(hsv_pixel, cv2.COLOR_HSV2RGB)[0][0]
+        return rgb_pixel[0], rgb_pixel[1], rgb_pixel[2]
 
     def _draw_grid(self, img):
         h, w = img.shape[:2]
