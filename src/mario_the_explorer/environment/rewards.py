@@ -13,3 +13,6 @@ class RewardModel(ABC):
                    truncated: bool,
                    info: dict) -> float:
         raise NotImplementedError
+    
+    def reset(self):
+        pass

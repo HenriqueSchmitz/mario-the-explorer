@@ -50,7 +50,11 @@ class SuperMarioWorldEmulator(gym.Env):
         self.render_grid = render_grid
         self.observation = None
 
-    def reset(self, **kwargs):
+    def reset(self, reset_reward_model: bool = True, reset_overlay: bool = True, **kwargs):
+        if reset_reward_model:
+            self.reward_model.reset()
+        if reset_overlay and self.screen_overlay is not None:
+            self.screen_overlay.reset()
         self._current_step = 0
         _, info = self.env.reset(**kwargs)
         self.observation = self._world_parser.get_screen_matrix(info)

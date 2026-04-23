@@ -20,6 +20,9 @@ class ScreenOverlay(ABC):
     @abstractmethod
     def apply(self, original_frame: np.ndarray, observation: Optional[list[list[Tile]]]):
         raise NotImplementedError
+    
+    def reset(self):
+        pass
 
 
 class DebugVisualizer():
