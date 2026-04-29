@@ -56,7 +56,7 @@ class TileEncoder:
             obs_tensor = self._ensure_tensor(observation).to(self.device)
             return self.model(obs_tensor, return_features=True).permute(1, 2, 0)
 
-    def train(self, observations, epochs=5, batch_size=32, mask_prob=0.15):
+    def train(self, observations, epochs=5, batch_size=128, mask_prob=0.15):
         if not observations: return
         
         loader = DataLoader(self._prepare_dataset(observations), batch_size=batch_size, shuffle=True)
