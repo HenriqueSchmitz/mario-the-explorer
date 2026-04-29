@@ -62,7 +62,20 @@ class TileEncoder:
         loader = DataLoader(self._prepare_dataset(observations), batch_size=batch_size, shuffle=True)
         self.model.train()
         for epoch in range(epochs):
-            self._run_epoch(loader, mask_prob, epoch, epochs, print_progress=print_progress)
+            pbar = tqdm(loader, desc=f"Epoch {epoch+1}/{epochs}") if print_progress else loader
+            for batch in pbar:
+                batch = batch.to(self.device)
+                masked_input = self._apply_mask(batch, mask_prob)
+                self.optimizer.zero_grad(set_to_none=True)
+                output = self.model(masked_input)
+                loss = self.criterion(output, batch)
+                loss.backward()
+                self.optimizer.step()
+                if print_progress:
+                    pbar.set_postfix(loss=loss.item())
+                del loss, output, masked_input, batch
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
 
     def save(self, path):
         checkpoint = {
@@ -79,23 +92,6 @@ class TileEncoder:
         instance = TileEncoder(**checkpoint['params'], device=device)
         instance.model.load_state_dict(checkpoint['model_state'])
         return instance
-
-    def _run_epoch(self, loader, mask_prob, epoch, epochs, print_progress=False):
-        self.model.train()
-        pbar = tqdm(loader, desc=f"Epoch {epoch+1}/{epochs}") if print_progress else loader
-        for batch in pbar:
-            batch = batch.to(self.device)
-            masked_input = self._apply_mask(batch, mask_prob)
-            self.optimizer.zero_grad(set_to_none=True)
-            output = self.model(masked_input)
-            loss = self.criterion(output, batch)
-            loss.backward()
-            self.optimizer.step()
-            if print_progress:
-                pbar.set_postfix(loss=loss.item())
-            del loss, output, masked_input, batch
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
 
     def _apply_mask(self, batch, mask_prob):
         mask = (torch.rand(batch.shape, device=self.device) < mask_prob)
