@@ -34,6 +34,10 @@ class SuperMarioCombo(Enum):
     JUMP = [SuperMarioAction.B]
     DOWN = [SuperMarioAction.DOWN]
 
+    @staticmethod
+    def get_combo_id(combo: 'SuperMarioCombo') -> int:
+        return list(SuperMarioCombo).index(combo)
+
 class SuperMarioDiscretizer(gym.ActionWrapper):
 
     def __init__(self, env):
@@ -55,7 +59,7 @@ class SuperMarioDiscretizer(gym.ActionWrapper):
 def prime_policy_for_combo(model, target_combo: SuperMarioCombo, env, logger: Logger, iterations=1000):
     logger.info(f"Priming policy to prefer '{target_combo.key}'") # type: ignore
     optimizer = model.policy.optimizer
-    combo_index = list(SuperMarioCombo).index(target_combo)
+    combo_index = SuperMarioCombo.get_combo_id(target_combo)
     target_action = torch.tensor([combo_index]).to(model.device)
     model.policy.train()
     for _ in range(iterations):
