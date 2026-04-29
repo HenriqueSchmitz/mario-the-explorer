@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
-import os
+from tqdm import tqdm
 
 class TileEncoderNet(nn.Module):
 
@@ -56,14 +56,13 @@ class TileEncoder:
             obs_tensor = self._ensure_tensor(observation).to(self.device)
             return self.model(obs_tensor, return_features=True).permute(1, 2, 0)
 
-    def train(self, observations, epochs=5, batch_size=128, mask_prob=0.15):
+    def train(self, observations, epochs=5, batch_size=128, mask_prob=0.15, print_progress=False):
         if not observations: return
         
         loader = DataLoader(self._prepare_dataset(observations), batch_size=batch_size, shuffle=True)
         self.model.train()
-
         for epoch in range(epochs):
-            self._run_epoch(loader, mask_prob)
+            self._run_epoch(loader, mask_prob, epoch, epochs, print_progress=print_progress)
 
     def save(self, path):
         checkpoint = {
@@ -81,17 +80,32 @@ class TileEncoder:
         instance.model.load_state_dict(checkpoint['model_state'])
         return instance
 
-    def _run_epoch(self, loader, mask_prob):
+    def _run_epoch(self, loader, mask_prob, epoch, epochs, print_progress=False):
+        if print_progress:
+            progress_bar = tqdm(loader, desc=f"Epoch {epoch+1}/{epochs}")
+            for batch in progress_bar:
+                batch = batch.to(self.device)
+                masked_input = self._apply_mask(batch, mask_prob)
+                
+                self.optimizer.zero_grad()
+                output = self.model(masked_input)
+                
+                loss = self.criterion(output, batch)
+                loss.backward()
+                self.optimizer.step()
+                progress_bar.set_postfix(loss=loss.item())
+            progress_bar.close()
+            return
         for batch in loader:
-            batch = batch.to(self.device)
-            masked_input = self._apply_mask(batch, mask_prob)
-            
-            self.optimizer.zero_grad()
-            output = self.model(masked_input)
-            
-            loss = self.criterion(output, batch)
-            loss.backward()
-            self.optimizer.step()
+                batch = batch.to(self.device)
+                masked_input = self._apply_mask(batch, mask_prob)
+                
+                self.optimizer.zero_grad()
+                output = self.model(masked_input)
+                
+                loss = self.criterion(output, batch)
+                loss.backward()
+                self.optimizer.step()
 
     def _apply_mask(self, batch, mask_prob):
         mask = (torch.rand(batch.shape, device=self.device) < mask_prob)
