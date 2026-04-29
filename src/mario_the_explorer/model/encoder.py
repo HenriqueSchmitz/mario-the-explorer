@@ -81,31 +81,21 @@ class TileEncoder:
         return instance
 
     def _run_epoch(self, loader, mask_prob, epoch, epochs, print_progress=False):
-        if print_progress:
-            progress_bar = tqdm(loader, desc=f"Epoch {epoch+1}/{epochs}")
-            for batch in progress_bar:
-                batch = batch.to(self.device)
-                masked_input = self._apply_mask(batch, mask_prob)
-                
-                self.optimizer.zero_grad()
-                output = self.model(masked_input)
-                
-                loss = self.criterion(output, batch)
-                loss.backward()
-                self.optimizer.step()
-                progress_bar.set_postfix(loss=loss.item())
-            progress_bar.close()
-            return
-        for batch in loader:
-                batch = batch.to(self.device)
-                masked_input = self._apply_mask(batch, mask_prob)
-                
-                self.optimizer.zero_grad()
-                output = self.model(masked_input)
-                
-                loss = self.criterion(output, batch)
-                loss.backward()
-                self.optimizer.step()
+        self.model.train()
+        pbar = tqdm(loader, desc=f"Epoch {epoch+1}/{epochs}") if print_progress else loader
+        for batch in pbar:
+            batch = batch.to(self.device)
+            masked_input = self._apply_mask(batch, mask_prob)
+            self.optimizer.zero_grad(set_to_none=True)
+            output = self.model(masked_input)
+            loss = self.criterion(output, batch)
+            loss.backward()
+            self.optimizer.step()
+            if print_progress:
+                pbar.set_postfix(loss=loss.item())
+            del loss, output, masked_input, batch
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
     def _apply_mask(self, batch, mask_prob):
         mask = (torch.rand(batch.shape, device=self.device) < mask_prob)
