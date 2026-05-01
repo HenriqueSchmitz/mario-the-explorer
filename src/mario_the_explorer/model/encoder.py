@@ -36,7 +36,7 @@ class TileEncoderNet(nn.Module):
 
 class TileEncoder:
 
-    def __init__(self, num_ids=65536, embedding_dim=8, output_dim=16, rows=14, cols=16, learning_rate=1e-3, device=None):
+    def __init__(self, num_ids=1024, embedding_dim=8, output_dim=16, rows=14, cols=16, learning_rate=1e-3, device=None):
         self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.params = {
             'num_ids': num_ids,
