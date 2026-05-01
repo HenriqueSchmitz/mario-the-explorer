@@ -14,7 +14,7 @@ class TileEncoderNet(nn.Module):
             nn.Conv2d(embedding_dim, 32, kernel_size=3, padding=1),
             nn.ReLU(),
             nn.Conv2d(32, output_dim, kernel_size=3, padding=1),
-            nn.ReLU()
+            nn.Sigmoid()
         )
         
         self.reconstruction_head = nn.Conv2d(output_dim, num_ids, kernel_size=1)
