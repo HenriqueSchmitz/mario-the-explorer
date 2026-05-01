@@ -57,7 +57,7 @@ class SuperMarioDiscretizer(gym.ActionWrapper):
         return self._action_map[int(action)]
     
 def prime_policy_for_combo(model, target_combo: SuperMarioCombo, env, logger: Logger, iterations=1000):
-    logger.info(f"Priming policy to prefer '{target_combo.key}'") # type: ignore
+    logger.info(f"Priming policy to prefer '{target_combo.name}'")
     optimizer = model.policy.optimizer
     combo_index = SuperMarioCombo.get_combo_id(target_combo)
     target_action = torch.tensor([combo_index]).to(model.device)
