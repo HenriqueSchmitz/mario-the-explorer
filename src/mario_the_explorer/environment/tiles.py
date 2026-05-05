@@ -123,21 +123,21 @@ class DenseTileMatrix():
                     continue
                 if tile["type"] == TileType.SPRITE:
                     resolved_mario_row.append(0)
-                    resolved_sprite_row.append(tile["id"])
+                    resolved_sprite_row.append(tile["id"] + 1)
                     resolved_extended_sprite_row.append(0)
                     resolved_block_row.append(0)
                     continue
                 if tile["type"] == TileType.EXTENDED_SPRITE:
                     resolved_mario_row.append(0)
                     resolved_sprite_row.append(0)
-                    resolved_extended_sprite_row.append(tile["id"])
+                    resolved_extended_sprite_row.append(tile["id"] + 1)
                     resolved_block_row.append(0)
                     continue
                 if tile["type"] == TileType.BLOCK:
                     resolved_mario_row.append(0)
                     resolved_sprite_row.append(0)
                     resolved_extended_sprite_row.append(0)
-                    resolved_block_row.append(tile["id"])
+                    resolved_block_row.append(tile["id"] + 1)
                     continue
                 resolved_mario_row.append(0)
                 resolved_sprite_row.append(0)
