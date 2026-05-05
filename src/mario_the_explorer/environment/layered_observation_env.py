@@ -51,7 +51,7 @@ class SuperMarioWorldLayeredEmulator(gym.Env):
         self.render_grid = render_grid
         self.limit_fps_to = limit_fps_to
         if limit_fps_to is not None:
-            self.frames_per_action = self.metadata["render_fps"] // limit_fps_to
+            self.frames_per_action = SuperMarioWorldLayeredEmulator.metadata["render_fps"] // limit_fps_to
         self.observation = None
 
     def reset(self, reset_reward_model: bool = True, reset_overlay: bool = True, **kwargs):
