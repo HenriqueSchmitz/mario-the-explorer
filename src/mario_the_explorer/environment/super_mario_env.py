@@ -92,5 +92,7 @@ class SuperMarioWorldEmulator(gym.Env):
     def _reformat_info(self, info) -> dict:
         return {
             "score": info["score"],
-            "lives": info["lives"]
+            "lives": info["lives"],
+            "mario_x": info["x"],
+            "mario_y": info["y"],
         }
