@@ -101,3 +101,50 @@ class DenseTileMatrix():
                 resolved_row.append(tile_absolute_id(col.resolve()))
             resolved_matrix.append(resolved_row)
         return np.array(resolved_matrix)
+    
+    def resolveLayered(self):
+        resolved_matrix = []
+        resolved_mario_layer = []
+        resolved_sprite_layer = []
+        resolved_extended_sprite_layer = []
+        resolved_block_layer = []
+        for row in self.tile_matrix:
+            resolved_mario_row = []
+            resolved_sprite_row = []
+            resolved_extended_sprite_row = []
+            resolved_block_row = []
+            for col in row:
+                tile = col.resolve()
+                if tile["type"] == TileType.MARIO:
+                    resolved_mario_row.append(1)
+                    resolved_sprite_row.append(0)
+                    resolved_extended_sprite_row.append(0)
+                    resolved_block_row.append(0)
+                    continue
+                if tile["type"] == TileType.SPRITE:
+                    resolved_mario_row.append(0)
+                    resolved_sprite_row.append(tile["id"])
+                    resolved_extended_sprite_row.append(0)
+                    resolved_block_row.append(0)
+                    continue
+                if tile["type"] == TileType.EXTENDED_SPRITE:
+                    resolved_mario_row.append(0)
+                    resolved_sprite_row.append(0)
+                    resolved_extended_sprite_row.append(tile["id"])
+                    resolved_block_row.append(0)
+                    continue
+                if tile["type"] == TileType.BLOCK:
+                    resolved_mario_row.append(0)
+                    resolved_sprite_row.append(0)
+                    resolved_extended_sprite_row.append(0)
+                    resolved_block_row.append(tile["id"])
+                    continue
+            resolved_mario_layer.append(resolved_mario_row)
+            resolved_sprite_layer.append(resolved_sprite_row)
+            resolved_extended_sprite_layer.append(resolved_extended_sprite_row)
+            resolved_block_layer.append(resolved_block_row)
+        resolved_matrix.append(resolved_mario_layer)
+        resolved_matrix.append(resolved_sprite_layer)
+        resolved_matrix.append(resolved_extended_sprite_layer)
+        resolved_matrix.append(resolved_block_layer)
+        return np.array(resolved_matrix)

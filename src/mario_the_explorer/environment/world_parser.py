@@ -35,6 +35,11 @@ class WorldParser:
     def get_screen_matrix_simplified(self, info) -> np.ndarray:
         screen_matrix = self._build_dense_screen_matrix(info)
         return screen_matrix.resolveSimplified()
+    
+    def get_screen_matrix_layered(self, info) -> np.ndarray:
+        screen_matrix = self._build_dense_screen_matrix(info)
+        return screen_matrix.resolveLayered()
+
 
     def _build_dense_screen_matrix(self, info) -> DenseTileMatrix:
         screen_matrix = DenseTileMatrix()
