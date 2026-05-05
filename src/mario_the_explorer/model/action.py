@@ -37,6 +37,21 @@ class SuperMarioCombo(Enum):
     @staticmethod
     def get_combo_id(combo: 'SuperMarioCombo') -> int:
         return list(SuperMarioCombo).index(combo)
+    
+    @staticmethod
+    def get_combo_id_from_action(action: np.ndarray) -> int:
+        for combo in SuperMarioCombo:
+            if np.array_equal(action, SuperMarioCombo._build_action_from_combo(combo)):
+                return SuperMarioCombo.get_combo_id(combo)
+        return -1
+    
+    @staticmethod
+    def _build_action_from_combo(combo: 'SuperMarioCombo') -> np.ndarray:
+        action_vector = np.zeros(len(SuperMarioAction), dtype=np.uint8)
+        for action in combo.value:
+            action_vector[action.value] = 1
+        return action_vector
+
 
 class SuperMarioDiscretizer(gym.ActionWrapper):
 
