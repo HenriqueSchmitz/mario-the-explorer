@@ -43,7 +43,7 @@ class SuperMarioWorldLayeredEmulator(gym.Env):
         self._debug_visualizer = DebugVisualizer(render_grid=render_grid)
         self.action_space = self.env.action_space
         self.observation_space = gym.spaces.Box(
-            low=0, high=65535, shape=(SCREEN_ROWS, SCREEN_COLUMNS), dtype=np.int32
+            low=0, high=65535, shape=(4, SCREEN_ROWS, SCREEN_COLUMNS), dtype=np.int32
         )
         self._current_step = 0
         self.render_debug = render_debug
