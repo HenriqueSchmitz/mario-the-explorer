@@ -139,6 +139,10 @@ class DenseTileMatrix():
                     resolved_extended_sprite_row.append(0)
                     resolved_block_row.append(tile["id"])
                     continue
+                resolved_mario_row.append(0)
+                resolved_sprite_row.append(0)
+                resolved_extended_sprite_row.append(0)
+                resolved_block_row.append(0)
             resolved_mario_layer.append(resolved_mario_row)
             resolved_sprite_layer.append(resolved_sprite_row)
             resolved_extended_sprite_layer.append(resolved_extended_sprite_row)
