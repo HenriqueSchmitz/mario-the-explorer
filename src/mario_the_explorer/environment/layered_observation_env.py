@@ -27,6 +27,7 @@ class SuperMarioWorldLayeredEmulator(gym.Env):
                  max_episode_length: Optional[int] = None,
                  render_debug: bool = False,
                  render_grid: bool = False,
+                 limit_fps_to: Optional[int] = None,
                  logger: Optional[Logger] = None):
         super().__init__()
         self.logger: Logger = logger if logger is not None else DummyLogger()
@@ -48,6 +49,9 @@ class SuperMarioWorldLayeredEmulator(gym.Env):
         self._current_step = 0
         self.render_debug = render_debug
         self.render_grid = render_grid
+        self.limit_fps_to = limit_fps_to
+        if limit_fps_to is not None:
+            self.frames_per_action = self.metadata["render_fps"] // limit_fps_to
         self.observation = None
 
     def reset(self, reset_reward_model: bool = True, reset_overlay: bool = True, **kwargs):
@@ -71,6 +75,9 @@ class SuperMarioWorldLayeredEmulator(gym.Env):
         return game_frame
 
     def step(self, action: list[int]) -> tuple[Any, float, bool, bool, dict]:
+        if self.limit_fps_to is not None:
+            for _ in range(self.frames_per_action - 1):
+                _, _, _, _, info = self.env.step(action)
         _, _, _, _, info = self.env.step(action)
         self._current_step += 1
         self.observation = self._world_parser.get_screen_matrix(info)
