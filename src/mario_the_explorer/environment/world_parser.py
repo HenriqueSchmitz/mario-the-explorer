@@ -53,7 +53,7 @@ class WorldParser:
         data.set_value("green_switch",  1 if button_states.green_button else 0)
         data.set_value("red_switch",    1 if button_states.red_button else 0)
         data.set_value("blue_switch",   1 if button_states.blue_button else 0)
-        self.logger.info(f"Button states applied: Yellow={button_states.yellow_button}, Green={button_states.green_button}, Red={button_states.red_button}, Blue={button_states.blue_button}")
+        self.logger.debug(f"Button states applied: Yellow={button_states.yellow_button}, Green={button_states.green_button}, Red={button_states.red_button}, Blue={button_states.blue_button}")
 
     def get_screen_matrix(self, info) -> list[list[Tile]]:
         screen_matrix = self._build_dense_screen_matrix(info)
