@@ -21,12 +21,39 @@ MAP_TILE_ATTRIBUTES_BASE_ADDRESS = MAP_TILES_BASE_ADDRESS + MAP_TILE_ATTRIBUTES_
 
 SKY_TILE_ID = 0x25
 
+YELLOW_SWITCH_ADDRESS = 0x1F27
+GREEN_SWITCH_ADDRESS  = 0x1F28
+RED_SWITCH_ADDRESS    = 0x1F29
+BLUE_SWITCH_ADDRESS   = 0x1F2A
+
+
+
+class ButtonStates():
+    def __init__(self,
+                 yellow_button: bool = False,
+                 green_button: bool = False,
+                 red_button: bool = False,
+                 blue_button: bool = False) -> None:
+        self.yellow_button = yellow_button
+        self.green_button = green_button
+        self.red_button = red_button
+        self.blue_button = blue_button
 
 
 class WorldParser:
-    def __init__(self, env, logger: Optional[Logger] = None):
+    def __init__(self, env, button_states: Optional[ButtonStates] = None, logger: Optional[Logger] = None):
         self.logger: Logger = logger if logger is not None else DummyLogger()
         self.env = env
+        if button_states is not None:
+            self.set_button_states_to_ram(button_states)
+
+    def set_button_states_to_ram(self, button_states: ButtonStates):
+        ram = self.env.unwrapped.get_ram()
+        ram[YELLOW_SWITCH_ADDRESS] = 1 if button_states.yellow_button else 0
+        ram[GREEN_SWITCH_ADDRESS]  = 1 if button_states.green_button else 0
+        ram[RED_SWITCH_ADDRESS]    = 1 if button_states.red_button else 0
+        ram[BLUE_SWITCH_ADDRESS]   = 1 if button_states.blue_button else 0
+        self.logger.info(f"Button states applied: Yellow={button_states.yellow_button}, Green={button_states.green_button}, Red={button_states.red_button}, Blue={button_states.blue_button}")
 
     def get_screen_matrix(self, info) -> list[list[Tile]]:
         screen_matrix = self._build_dense_screen_matrix(info)
