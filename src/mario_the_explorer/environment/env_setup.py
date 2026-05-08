@@ -25,6 +25,12 @@ EXT_SPRITE_X_HIGH_BASE_ADDRESS = 0x1733
 EXT_SPRITE_Y_LOW_BASE_ADDRESS = 0x1715
 EXT_SPRITE_Y_HIGH_BASE_ADDRESS = 0x1729
 
+RAM_BASE = 8257536 
+YELLOW_SWITCH_ADDRESS = RAM_BASE + 0x1F27
+GREEN_SWITCH_ADDRESS  = RAM_BASE + 0x1F28
+RED_SWITCH_ADDRESS    = RAM_BASE + 0x1F29
+BLUE_SWITCH_ADDRESS   = RAM_BASE + 0x1F2A
+
 
 
 def setup_emulator_memory():
@@ -34,10 +40,14 @@ def setup_emulator_memory():
         "lives": {"address": LIVES_ADDRESS, "type": "|i1"},
         "x": {"address": MARIO_X_POSITION_ADDRESS, "type": "<u2"},
         "y": {"address": MARIO_Y_POSITION_ADDRESS, "type": "<u2"},
-        "cam_x": {"address": CAMERA_SCROLL_X_ADDRESS,   "type": "<u2"},
-        "cam_y": {"address": CAMERA_SCROLL_Y_ADDRESS,   "type": "<u2"},
+        "cam_x": {"address": CAMERA_SCROLL_X_ADDRESS, "type": "<u2"},
+        "cam_y": {"address": CAMERA_SCROLL_Y_ADDRESS, "type": "<u2"},
         "mario_powerup": {"address": MARIO_POWERUP_ADDRESS, "type": "|u1"},
         "mario_priority": {"address": MARIO_PRIORITY_ADDRESS, "type": "|u1"},
+        "yellow_switch": {"address": YELLOW_SWITCH_ADDRESS, "type": "|u1"},
+        "green_switch": {"address": GREEN_SWITCH_ADDRESS, "type": "|u1"},
+        "red_switch": {"address": RED_SWITCH_ADDRESS, "type": "|u1"},
+        "blue_switch": {"address": BLUE_SWITCH_ADDRESS, "type": "|u1"},
     }
     }
     for sprite_index in range(12):

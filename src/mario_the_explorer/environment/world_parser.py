@@ -48,11 +48,11 @@ class WorldParser:
             self.set_button_states_to_ram(button_states)
 
     def set_button_states_to_ram(self, button_states: ButtonStates):
-        ram = self.env.unwrapped.get_ram()
-        ram[YELLOW_SWITCH_ADDRESS] = 1 if button_states.yellow_button else 0
-        ram[GREEN_SWITCH_ADDRESS]  = 1 if button_states.green_button else 0
-        ram[RED_SWITCH_ADDRESS]    = 1 if button_states.red_button else 0
-        ram[BLUE_SWITCH_ADDRESS]   = 1 if button_states.blue_button else 0
+        data = self.env.unwrapped.data
+        data.set_value("yellow_switch", 1 if button_states.yellow_button else 0)
+        data.set_value("green_switch",  1 if button_states.green_button else 0)
+        data.set_value("red_switch",    1 if button_states.red_button else 0)
+        data.set_value("blue_switch",   1 if button_states.blue_button else 0)
         self.logger.info(f"Button states applied: Yellow={button_states.yellow_button}, Green={button_states.green_button}, Red={button_states.red_button}, Blue={button_states.blue_button}")
 
     def get_screen_matrix(self, info) -> list[list[Tile]]:
