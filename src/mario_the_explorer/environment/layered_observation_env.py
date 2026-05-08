@@ -8,7 +8,7 @@ from mario_the_explorer.environment.rewards import RewardModel
 import stable_retro as retro # type: ignore
 
 from mario_the_explorer.environment.visualization import DebugVisualizer, ScreenOverlay
-from mario_the_explorer.environment.world_parser import SCREEN_COLUMNS, SCREEN_ROWS, WorldParser
+from mario_the_explorer.environment.world_parser import SCREEN_COLUMNS, SCREEN_ROWS, ButtonStates, WorldParser
 from mario_the_explorer.logging.dummy_logger import DummyLogger
 
 EMULATOR_NAME = "SuperMarioWorld-Snes-v0"
@@ -28,6 +28,7 @@ class SuperMarioWorldLayeredEmulator(gym.Env):
                  render_debug: bool = False,
                  render_grid: bool = False,
                  limit_fps_to: Optional[int] = None,
+                 button_states: Optional[ButtonStates] = None,
                  logger: Optional[Logger] = None):
         super().__init__()
         self.logger: Logger = logger if logger is not None else DummyLogger()
@@ -40,7 +41,8 @@ class SuperMarioWorldLayeredEmulator(gym.Env):
         self.reward_model = reward_model
         self.screen_overlay = screen_overlay
         self._max_episode_length = max_episode_length
-        self._world_parser = WorldParser(self.env, logger=logger)
+        self._button_states = button_states
+        self._world_parser = WorldParser(self.env, button_states=button_states, logger=logger)
         self._debug_visualizer = DebugVisualizer(render_grid=render_grid)
         self.action_space = self.env.action_space
         self.observation_space = gym.spaces.Box(
@@ -61,6 +63,8 @@ class SuperMarioWorldLayeredEmulator(gym.Env):
             self.screen_overlay.reset()
         self._current_step = 0
         _, info = self.env.reset(**kwargs)
+        if self._button_states is not None:
+            self._world_parser.set_button_states_to_ram(self._button_states)
         self.observation = self._world_parser.get_screen_matrix(info)
         simplified_observation = self._world_parser.get_screen_matrix_layered(info)
         self._has_found_ram_offset = False
